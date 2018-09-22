@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ComicBookGallery.Data;
+using ComicBookGallery.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,22 +8,25 @@ using System.Web.Mvc;
 
 namespace ComicBookGallery.Controllers
 {
-    public class ComicBooksController: Controller
+    public class ComicBooksController : Controller
     {
-        public ActionResult Detail()
-        {
-            ViewBag.SeriesTitle = "Spider-Man";
-            ViewBag.IssueNumber = 700;
-            ViewBag.Description = "<p>Final issue! Witness the final hours of Doctor Octopus' life and his one, last, great act of revenge! Even if Spider-Man survives... <strong>will Peter Parker?</strong></p>";
-            ViewBag.Artists = new String[] {
-                "Script: Dan Slott",
-                "Pencils: Humberto Ramos",
-                "Inks: Victor Olazaba",
-                "Colors: Edgar Delgado",
-                "Letters: Chris Eliopoulos"
-            };
+        private ComicBookRepository _comicBookRepository = null;
 
-            return View();
+        public ComicBooksController()
+        {
+            _comicBookRepository = new ComicBookRepository();
+        }
+
+        public ActionResult Detail(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            var comicBook = _comicBookRepository.GetComicBook((int)id);
+
+            return View(comicBook);
         }
     }
 }
